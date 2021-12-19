@@ -10,24 +10,28 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+#pi screen is 720x576
 
 class Ui_SimplePiClock(object):
+    SCREEN_WIDTH = 720
+    SCREEN_HEIGHT = 576
+
     def setupUi(self, SimplePiClock):
         SimplePiClock.setObjectName("SimplePiClock")
         SimplePiClock.setEnabled(True)
-        SimplePiClock.resize(1669, 1210)
+        SimplePiClock.resize(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         SimplePiClock.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.centralwidget = QtWidgets.QWidget(SimplePiClock)
         self.centralwidget.setObjectName("centralwidget")
         self.timeLabel = QtWidgets.QLabel(self.centralwidget)
-        self.timeLabel.setGeometry(QtCore.QRect(620, 460, 421, 61))
+        self.timeLabel.setGeometry(QtCore.QRect(self.SCREEN_WIDTH/2 - (421/2), self.SCREEN_HEIGHT/2 - 30, 421, 61))
         font = QtGui.QFont()
         font.setPointSize(28)
         self.timeLabel.setFont(font)
         self.timeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.timeLabel.setObjectName("timeLabel")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(620, 530, 421, 61))
+        self.label.setGeometry(QtCore.QRect(self.SCREEN_WIDTH/2 - (421/2), self.SCREEN_HEIGHT/2, 421, 61))
         font = QtGui.QFont()
         font.setPointSize(28)
         self.label.setFont(font)
