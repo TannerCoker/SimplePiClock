@@ -11,41 +11,57 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import keyboard
 from datetime import datetime
-import time as tmod
 
 
 #pi screen is 720x576
 
 class Ui_SimplePiClock(object):
-    SCREEN_WIDTH = 720
+
+    #constants
     SCREEN_HEIGHT = 576
+    SCREEN_WIDTH = 720
+    LABEL_WIDTH = 150
+    LABEL_HEIGHT = 40
+
+    #style for the labels
+    labelStyle = 'background-color: black; color: yellow'
 
     def setupUi(self, SimplePiClock):
+        #setting up the window
         SimplePiClock.setObjectName("SimplePiClock")
-
         SimplePiClock.setEnabled(True)
+        SimplePiClock.setStyleSheet('background-color: black;')
         SimplePiClock.resize(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         SimplePiClock.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.centralwidget = QtWidgets.QWidget(SimplePiClock)
         self.centralwidget.setObjectName("centralwidget")
-        self.timeLabel = QtWidgets.QLabel(self.centralwidget)
 
-        self.timeLabel.setGeometry(QtCore.QRect((int)(self.SCREEN_WIDTH/2 - (421/2)), (int)(self.SCREEN_HEIGHT/2 - 30), 421, 61))
+        #creating the label to display the time
+        self.timeLabel = QtWidgets.QLabel(self.centralwidget)
+        #sets the background and text color 
+        self.timeLabel.setStyleSheet(self.labelStyle) 
+        #sets the dimensions and location
+        self.timeLabel.setGeometry(QtCore.QRect((int)(self.SCREEN_WIDTH/2 - (self.LABEL_WIDTH/2)), (int)(self.SCREEN_HEIGHT/2 - self.LABEL_HEIGHT), self.LABEL_WIDTH, self.LABEL_HEIGHT))
         font = QtGui.QFont()
         font.setPointSize(28)
         self.timeLabel.setFont(font)
         self.timeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.timeLabel.setObjectName("timeLabel")
 
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect((int)(self.SCREEN_WIDTH/2 - (421/2)), (int)(self.SCREEN_HEIGHT/2), 421, 61))
+        #creates the date label
+        self.dateLabel = QtWidgets.QLabel(self.centralwidget)
+        #sets the style sheet
+        self.dateLabel.setStyleSheet(self.labelStyle)
+        #sets dimension and location
+        self.dateLabel.setGeometry(QtCore.QRect((int)(self.SCREEN_WIDTH/2 - (self.LABEL_WIDTH/2)), (int)(self.SCREEN_HEIGHT/2), self.LABEL_WIDTH, self.LABEL_HEIGHT))
         font = QtGui.QFont()
         font.setPointSize(28)
-        self.label.setFont(font)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setObjectName("label")
+        self.dateLabel.setFont(font)
+        self.dateLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.dateLabel.setObjectName("dateLabel")
+        
+        
         SimplePiClock.setCentralWidget(self.centralwidget)
-
 
         self.retranslateUi(SimplePiClock)
         QtCore.QMetaObject.connectSlotsByName(SimplePiClock)
@@ -55,16 +71,24 @@ class Ui_SimplePiClock(object):
         _translate = QtCore.QCoreApplication.translate
         SimplePiClock.setWindowTitle(_translate("SimplePiClock", "SimplePiClock"))
         
+        #gets the keyboard presses and closes the app
+        #fullscreens the app or reverses the full screen
         if keyboard.is_pressed('esc'):
             sys.exit(app.exec_())
+        elif keyboard.is_pressed('w'):
+            SimplePiClock.showFullScreen()
+        elif keyboard.is_pressed('q') and SimplePiClock.isFullScreen():
+            SimplePiClock.showNormal()
 
+        #gets the current time
         curTime = datetime.now()
-
+        #creates the time and date strings
         time = curTime.strftime("%H:%M:%S")
         date = curTime.strftime("%m/%d/%y")
 
+        #changes the labels
         self.timeLabel.setText(_translate("SimplePiClock", time))
-        self.label.setText(_translate("SimplePiClock", date))
+        self.dateLabel.setText(_translate("SimplePiClock", date))
 
 
 
@@ -76,11 +100,13 @@ if __name__ == "__main__":
     ui.setupUi(SimplePiClock)
     SimplePiClock.show()
 
+    #function for QTimer to call which just updates the labels
     def update_time():
         ui.retranslateUi(SimplePiClock)
 
+    #QTimer to call the update_time function
     timer = QtCore.QTimer()
     timer.timeout.connect(update_time)
-    timer.start(1000)
+    timer.start()
 
     sys.exit(app.exec_())
